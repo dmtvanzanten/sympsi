@@ -63,7 +63,8 @@ from sympsi.expectation import Expectation
 debug = False
 
 # Hack to get past Sympy's Dagger implementation breaking instance checking
-daggercls = Dagger(Dummy()).__class__
+# 2025: With sympy 1.14 this is no longer needed it seems
+# daggercls = Dagger(Dummy()).__class__
 
 # -----------------------------------------------------------------------------
 # IPython notebook related functions
@@ -585,7 +586,7 @@ def split_coeff_operator(e):
     if isinstance(e, Operator):
         return 1, e
 
-    if isinstance(e, daggercls):
+    if isinstance(e, Dagger):
         if e.is_commutative:
             return e, 1 
         else:
@@ -598,7 +599,7 @@ def split_coeff_operator(e):
         for arg in e.args:
             if isinstance(arg, Operator):
                 o_args.append(arg)
-            elif isinstance(arg, daggercls):
+            elif isinstance(arg, Dagger):
                 if arg.is_commutative:
                     c_args.append(arg)
                 else:
@@ -1002,7 +1003,7 @@ def get_coefficient(expr, ops, right=True):
             return Mul(*terms)
     elif isinstance(expr, Operator):
         return Add(1)
-    elif isinstance(expr, daggercls):
+    elif isinstance(expr, Dagger):
         return Add(1)
     return S.Zero
 
@@ -1028,7 +1029,7 @@ def ncollect(expr, take='left'):
         elif isinstance(e, Operator):
             d = uniq.setdefault(e, Add())
             uniq[e] += coeff         
-        elif isinstance(e, daggercls):
+        elif isinstance(e, Dagger):
             if e.is_commutative:
                 scalar += coeff
             else:
@@ -1151,7 +1152,7 @@ def bch_expansion(A, B, N=6, collect_operators=None, independent=False,
 def unitary_transformation(U, O, N=6, collect_operators=None,
                            independent=False, allinone=False,
                            expansion_search=True):
-    """
+    r"""
     Perform a unitary transformation
 
         O = U O U^\dagger
@@ -1195,7 +1196,7 @@ def unitary_transformation(U, O, N=6, collect_operators=None,
 def hamiltonian_transformation(U, H, N=6, collect_operators=None,
                                independent=False, expansion_search=True, 
                                allinone = False):
-    """
+    r"""
     Apply an unitary basis transformation to the Hamiltonian H:
 
         H = U H U^\dagger -i U d/dt(U^\dagger)
