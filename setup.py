@@ -18,9 +18,7 @@ Operating System :: Microsoft :: Windows
 """
 
 import os
-import sys
-import numpy as np
-from numpy.distutils.core import setup
+from setuptools import setup, find_packages
 
 MAJOR = 0
 MINOR = 1
